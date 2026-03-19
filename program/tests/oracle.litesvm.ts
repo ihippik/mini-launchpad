@@ -1,4 +1,3 @@
-import * as anchor from "@coral-xyz/anchor";
 import { BorshAccountsCoder, BorshInstructionCoder, type Idl } from "@coral-xyz/anchor";
 import { LiteSVM } from "litesvm";
 import { Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
@@ -84,9 +83,7 @@ describe("sol_usd_oracle (LiteSVM)", () => {
     const decoded = accountsCoder.decode("OracleState", Buffer.from((acct as any).data));
     expect(decoded.admin.toBase58()).to.eq(payer.publicKey.toBase58());
     expect(decoded.price.toNumber()).to.eq(0);
-    // TODO(student): this expectation is intentionally wrong.
-    // Re-check how many decimals the oracle stores for the SOL/USD price.
-    expect(decoded.decimals).to.eq(8);
+    expect(decoded.decimals).to.eq(6);
   });
 
   it("update_price updates price only for admin", () => {
