@@ -300,14 +300,38 @@ fn parse_token_created(logs: &RpcLogsResponse, _program_id: Pubkey) -> Option<To
 }
 
 fn to_fixed_6(txt: &str) -> Result<u64> {
-    // TODO(student): parse a decimal string into an integer with 6 fixed decimals.
     // Examples:
     // - "120" -> 120_000_000
     // - "120.12" -> 120_120_000
     // - "0.000001" -> 1
     // Extra digits after the 6th decimal place should be truncated, not rounded.
-    let _ = txt;
-    todo!("student task: implement fixed-6 parser")
+    const SCALE: u64 = 1_000_000;
+
+    let (int_raw, frac_raw) = match txt.split_once('.') {
+        Some((int_part, frac_part)) => {
+            (int_part, frac_part)
+        }
+        None => (txt, ""),
+    };
+
+    if int_raw.is_empty() || !int_raw.chars().all(|c| c.is_ascii_digit()) {
+        return Err(anyhow!("invalid integer part in price"));
+    }
+    if !frac_raw.chars().all(|c| c.is_ascii_digit()) {
+        return Err(anyhow!("invalid fractional part in price"));
+    }
+
+    let int_part: u64 = int_raw.parse().context("integer parse failed")?;
+    let mut frac_truncated: String = frac_raw.chars().take(6).collect();
+    while frac_truncated.len() < 6 {
+        frac_truncated.push('0');
+    }
+    let frac_part: u64 = frac_truncated.parse().context("fraction parse failed")?;
+
+    int_part
+        .checked_mul(SCALE)
+        .and_then(|v| v.checked_add(frac_part))
+        .ok_or_else(|| anyhow!("price fixed-point overflow"))
 }
 
 #[cfg(test)]
@@ -338,14 +362,14 @@ mod tests {
 
     #[test]
     fn to_fixed_6_truncates_fraction_to_six_digits() {
-        // TODO(student): this assertion is intentionally wrong.
         // The parser is expected to truncate after 6 digits instead of rounding.
-        assert_eq!(to_fixed_6("1.1234569").unwrap(), 1_123_457);
+        assert_eq!(to_fixed_6("1.1234569").unwrap(), 1_123_456);
     }
 
     #[test]
     fn to_fixed_6_rejects_invalid_input() {
         assert!(to_fixed_6("abc").is_err());
+        assert!(to_fixed_6("1.2.3").is_err());
     }
 
     #[test]
