@@ -2,6 +2,19 @@
 
 Учебный мини-лаунчпад на Solana + Anchor: два on-chain контракта (SOL/USD oracle и token minter), Rust backend для обновления цены и прослушки событий, а также Remix фронтенд (папка `frontend/`).
 
+
+## Devnet addresses
+```yaml
+ORACLE_PROGRAM_ID = 2yFrQZYp8MSRwyo7PGiej5zDDrq8oVqgBkta3ebEcKcV
+MINTER_PROGRAM_ID = LBzk3eD3YejB84jowMZ2vcSjskYiMCvs2RsRmawxvHF
+ORACLE_STATE_PUBKEY = HXGHzo6MztYkgqtrWS2SUiDYNWdA2oRYcYxgk8sTWgrV
+```
+
+### Transactions
+https://explorer.solana.com/tx/3KEKytkqjvJbdbrp6VeDsjA6NN9pxZfHTAeMPKNKbafTa51hJPXK9KNUTmejpWUwnfMmik2ho2MJuo3HocWiJqYr?cluster=devnet
+https://explorer.solana.com/tx/2RkDpaJwnc7HKerH2uZB2auY4GVQ1BoXPTBSq45jwYHvPDMGdNn8Few2RewYU5AnnmGpi99BcvcL57UYGDJvjnSG?cluster=devnet
+https://explorer.solana.com/tx/3Xrw3MQjw5PEbwg8jcmFc25rLinTvC5Y5Z8iGntxBL5RajLJjcSg5rvKoTBx51nxZhJjXKGvXyRNAn8enwbrb7jA?cluster=devnet
+
 ## Структура
 - `program/` — Anchor workspace  
   - `programs/sol_usd_oracle` — хранит цену SOL/USD (decimals = 6)  
